@@ -1,96 +1,101 @@
 <img width="3188" height="1202" alt="frame (3)" src="https://github.com/user-attachments/assets/517ad8e9-ad22-457d-9538-a9e62d137cd7" />
 
 
-# [Project Name] 🎯
+# [Project Name]: 🎹 Enhanced Keyboard Pressure Tracker
 
 
-## Basic Details
-### Team Name: [Name]
+## Basic Details: A fun and interactive web-based application that detects and analyzes the pressure/speed of your keyboard typing. It provides instant visual and audio feedback based on your typing style.
+
+### Team Name: Return 0
 
 
 ### Team Members
-- Team Lead: [Name] - [College]
-- Member 2: [Name] - [College]
-- Member 3: [Name] - [College]
+- Member 1: Parvathy U - College of Engineering Perumon
+- Member 2: Malavika B- College of Engineering Perumon
 
 ### Project Description
-[2-3 lines about what your project does]
+This is an interactive web app called "Enhanced Keyboard Pressure Tracker".
+It tracks your keystrokes, typing speed, and style, and shows fun visual and sound effects depending on how hard/fast you press the keys.
+
 
 ### The Problem (that doesn't exist)
-[What ridiculous problem are you solving?]
+how we can detect the keyboard typing style of a person
+
 
 ### The Solution (that nobody asked for)
-[How are you solving it? Keep it fun!]
+solving it as calculated = release time − press time.
+
+Typing style is determined based on that duration.
 
 ## Technical Details
 ### Technologies/Components Used
 For Software:
-- [Languages used]
-- [Frameworks used]
-- [Libraries used]
-- [Tools used]
+- html
+- javascript
+- css
 
 For Hardware:
-- [List main components]
-- [List specifications]
-- [List tools required]
+- nil
 
 ### Implementation
-For Software:
+For Software:vs code
 # Installation
-[commands]
+javascipt,liveserver,livepreview,savetyping
 
 # Run
 [commands]
 
-### Project Documentation
-For Software:
+#### Project Documentation
+For Software:  Project Title: Enhanced Keyboard Pressure Tracker
 
-# Screenshots (Add at least 3)
-![Screenshot1](Add screenshot 1 here with proper name)
+Purpose:
+This software analyzes the user’s typing style by measuring how long each key is pressed. It provides real-time feedback on typing speed, pressure, and rhythm, helping users understand and improve their typing behavior.
+
+#### Description:
+The application captures the duration of each key press and categorizes the typing style into different levels such as Lightning Fast, Soft Baby Typing, Perfect Rhythm, Heavy Handed, and Keyboard Destroyer. It visually displays this information with emojis and descriptions, plays corresponding sound effects, and shows live statistics like total keys pressed, average key press time, and words per minute (WPM).
+
+#### Technologies Used:
+
+HTML for structure
+
+CSS for styling
+
+JavaScript for interactive functionality and logic
+
+LocalStorage API for saving keystroke counts persistently
+
+#### Key Features:
+
+Real-time tracking of key press durations
+
+Typing style classification with visual and audio feedback
+
+Live statistics display including total keys pressed, average press time, and WPM
+
+Persistent storage of keystroke count across browser sessions
+
+Responsive user interface with dynamic background colors and animations
+
+Use Case:
+The software is intended for users interested in analyzing and improving their typing skills through interactive feedback and statistical insights.
+
+
+# Screenshots (Add at least 3)Screenshot1]
+[(Add screenshot 1 here with](https://drive.google.com/drive/folders/1WLOk5CzmA2Bvil_OJKX88AmbF_Ss-LI-?usp=drive_link)
 *Add caption explaining what this shows*
 
-![Screenshot2](Add screenshot 2 here with proper name)
+![https://drive.google.com/drive/folders/1WLOk5CzmA2Bvil_OJKX88AmbF_Ss-LI-?usp=drive_link)
 *Add caption explaining what this shows*
 
-![Screenshot3](Add screenshot 3 here with proper name)
+![https://drive.google.com/drive/folders/1WLOk5CzmA2Bvil_OJKX88AmbF_Ss-LI-?usp=drive_link)
 *Add caption explaining what this shows*
-
-# Diagrams
-![Workflow](Add your workflow/architecture diagram here)
-*Add caption explaining your workflow*
-
-For Hardware:
-
-# Schematic & Circuit
-![Circuit](Add your circuit diagram here)
-*Add caption explaining connections*
-
-![Schematic](Add your schematic diagram here)
-*Add caption explaining the schematic*
-
-# Build Photos
-![Components](Add photo of your components here)
-*List out all components shown*
-
-![Build](Add photos of build process here)
-*Explain the build steps*
-
-![Final](Add photo of final product here)
-*Explain the final build*
 
 ### Project Demo
 # Video
-[Add your demo video link here]
-*Explain what the video demonstrates*
+https://drive.google.com/drive/folders/1WLOk5CzmA2Bvil_OJKX88AmbF_Ss-LI-?usp=drive_link
 
 # Additional Demos
 [Add any extra demo materials/links]
-
-## Team Contributions
-- [Name 1]: [Specific contributions]
-- [Name 2]: [Specific contributions]
-- [Name 3]: [Specific contributions]
 
 ---
 Made with ❤️ at TinkerHub Useless Projects 
