@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎹 Keyboard Pressure Tracker Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --accent-color: #ffd700;
+            --text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            --card-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header with Navigation */
+        .app-header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            color: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .app-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-shadow: var(--text-shadow);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            font-weight: 500;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: var(--accent-color);
+            color: #333;
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Typing Test Tab */
+        .typing-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .intro {
+            font-size: 1.3rem;
+            color: white;
+            margin-bottom: 30px;
+            text-shadow: var(--text-shadow);
+        }
+
+        .typing-area {
+            width: 100%;
+            max-width: 800px;
+            padding: 25px;
+            border-radius: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--glass-border);
+            color: white;
+            font-size: 1.2rem;
+            font-family: 'Poppins', sans-serif;
+            resize: vertical;
+            min-height: 150px;
+            outline: none;
+            transition: all 0.3s ease;
+            margin: 0 auto;
+        }
+
+        .typing-area::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .typing-area:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Results Display */
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .result-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .pressure-result {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .emoji {
+            font-size: 50px;
+            display: block;
+            margin-bottom: 15px;
+            animation: bounce 0.6s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.05); }
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Progress Visualization */
+        .progress-section {
+            margin: 30px 0;
+        }
+
+        .progress-label {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: var(--glass-bg);
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color), #ff6b6b);
+            width: 0%;
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+
+        /* Analytics Tab */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .chart-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 25px;
+            color: white;
+        }
+
+        .chart-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Settings Tab */
+        .settings-section {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .setting-group {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .setting-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle.active {
+            background: var(--accent-color);
+        }
+
+        .toggle::before {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle.active::before {
+            transform: translateX(30px);
+        }
+
+        /* Leaderboard Tab */
+        .leaderboard-list {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .leaderboard-item {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+
+        .leaderboard-item:hover {
+            transform: translateX(10px);
+        }
+
+        .rank {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            min-width: 50px;
+        }
+
+        /* Achievements */
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .achievement-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .achievement-card.unlocked {
+            background: linear-gradient(135deg, var(--accent-color), #ff6b6b);
+            color: #333;
+            transform: scale(1.05);
+        }
+
+        .achievement-emoji {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        /* Footer */
+        .app-footer {
+            background: rgba(0, 0, 0, 0.3);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .app-title {
+                font-size: 1.5rem;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-buttons {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .main-content {
+                padding: 15px;
+            }
+
+            .typing-area {
+                font-size: 1rem;
+                padding: 20px;
+            }
+        }
+
+        /* Special Effects */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+            20%, 40%, 60%, 80% { transform: translateX(3px); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: var(--card-shadow); }
+            50% { box-shadow: 0 15px 35px rgba(255, 215, 0, 0.4); }
+        }
+
+        .glow {
+            animation: glow 0.5s ease-in-out;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="nav-container">
+                <h1 class="app-title">🎹 Keyboard Pressure Tracker Pro</h1>
+                <div class="nav-buttons">
+                    <button class="nav-btn active" data-tab="typing">Typing Test</button>
+                    <button class="nav-btn" data-tab="analytics">Analytics</button>
+                    <button class="nav-btn" data-tab="leaderboard">Leaderboard</button>
+                    <button class="nav-btn" data-tab="achievements">Achievements</button>
+                    <button class="nav-btn" data-tab="settings">Settings</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Typing Test Tab -->
+            <div class="tab-content active" id="typing">
+                <div class="typing-section">
+                    <p class="intro">Start typing to analyze your unique keyboard pressure patterns!</p>
+                    <textarea class="typing-area" placeholder="Click here and start typing to discover your typing style..."></textarea>
+                </div>
+
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div id="pressureResult" class="pressure-result">
+                            <span class="emoji">⌨️</span>
+                            Ready to analyze your typing!
+                        </div>
+                    </div>
+                    <div class="result-card">
+                        <div id="lastKeyInfo" style="color: white;">
+                            <strong>Last Key:</strong> Press any key to begin...
+                        </div>
+                        <div class="progress-section">
+                            <div class="progress-label">Typing Intensity</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="intensityBar"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalKeys">0</div>
+                        <div class="stat-label">Keys Pressed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="avgTime">0</div>
+                        <div class="stat-label">Avg Time (ms)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="wpm">0</div>
+                        <div class="stat-label">Words Per Minute</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="accuracy">100</div>
+                        <div class="stat-label">Accuracy (%)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="streak">0</div>
+                        <div class="stat-label">Current Streak</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="sessionTime">00:00</div>
+                        <div class="stat-label">Session Time</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div class="tab-content" id="analytics">
+                <div class="analytics-grid">
+                    <div class="chart-card">
+                        <div class="chart-title">Pressure Distribution</div>
+                        <div id="pressureChart">
+                            <canvas id="pressureCanvas" width="300" height="200"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-title">Typing Speed Over Time</div>
+                        <div id="speedChart">
+                            <canvas id="speedCanvas" width="300" height="200"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-title">Most Used Keys</div>
+                        <div id="keyFrequency"></div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-title">Session Statistics</div>
+                        <div id="sessionStats">
+                            <p>Total Sessions: <span id="totalSessions">1</span></p>
+                            <p>Best WPM: <span id="bestWPM">0</span></p>
+                            <p>Total Time Typed: <span id="totalTimeTyped">0m</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leaderboard Tab -->
+            <div class="tab-content" id="leaderboard">
+                <div class="leaderboard-list">
+                    <div class="leaderboard-item">
+                        <div class="rank">#1</div>
+                        <div>Lightning Fingers - 120 WPM</div>
+                        <div>🏆</div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <div class="rank">#2</div>
+                        <div>Speed Demon - 105 WPM</div>
+                        <div>🥈</div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <div class="rank">#3</div>
+                        <div>Keyboard Warrior - 98 WPM</div>
+                        <div>🥉</div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <div class="rank">#4</div>
+                        <div>You - <span id="userWPM">0</span> WPM</div>
+                        <div>👤</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Achievements Tab -->
+            <div class="tab-content" id="achievements">
+                <div class="achievements-grid">
+                    <div class="achievement-card" id="firstTyper">
+                        <div class="achievement-emoji">👶</div>
+                        <div><strong>First Steps</strong></div>
+                        <div>Type your first key</div>
+                    </div>
+                    <div class="achievement-card" id="speedster">
+                        <div class="achievement-emoji">⚡</div>
+                        <div><strong>Speed Demon</strong></div>
+                        <div>Reach 60+ WPM</div>
+                    </div>
+                    <div class="achievement-card" id="marathoner">
+                        <div class="achievement-emoji">🏃</div>
+                        <div><strong>Marathon Typer</strong></div>
+                        <div>Type for 10+ minutes</div>
+                    </div>
+                    <div class="achievement-card" id="destroyer">
+                        <div class="achievement-emoji">💥</div>
+                        <div><strong>Key Destroyer</strong></div>
+                        <div>Heavy typing detected</div>
+                    </div>
+                    <div class="achievement-card" id="consistent">
+                        <div class="achievement-emoji">🎯</div>
+                        <div><strong>Consistency King</strong></div>
+                        <div>Maintain steady rhythm</div>
+                    </div>
+                    <div class="achievement-card" id="explorer">
+                        <div class="achievement-emoji">🗺️</div>
+                        <div><strong>Key Explorer</strong></div>
+                        <div>Use 50+ different keys</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div class="tab-content" id="settings">
+                <div class="settings-section">
+                    <div class="setting-group">
+                        <div class="setting-title">Audio Settings</div>
+                        <div class="setting-item">
+                            <span>Sound Effects</span>
+                            <div class="toggle active" id="soundToggle"></div>
+                        </div>
+                        <div class="setting-item">
+                            <span>Key Click Sounds</span>
+                            <div class="toggle active" id="clickToggle"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <div class="setting-title">Display Settings</div>
+                        <div class="setting-item">
+                            <span>Real-time Feedback</span>
+                            <div class="toggle active" id="feedbackToggle"></div>
+                        </div>
+                        <div class="setting-item">
+                            <span>Animations</span>
+                            <div class="toggle active" id="animationToggle"></div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <div class="setting-title">Data</div>
+                        <div class="setting-item">
+                            <button class="nav-btn" onclick="resetStats()">Reset All Statistics</button>
+                        </div>
+                        <div class="setting-item">
+                            <button class="nav-btn" onclick="exportData()">Export Data</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Made with ❤️ by Parvathy and Malavika | Enhanced Keyboard Tracker Pro v2.0</p>
+        </footer>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // App State
+        let appState = {
+            keyPressTimes: {},
+            totalKeys: 0,
+            totalPressTime: 0,
+            startTime: null,
+            wordCount: 0,
+            sessionStartTime: null,
+            achievements: new Set(),
+            keyFrequency: {},
+            pressureHistory: [],
+            speedHistory: [],
+            currentStreak: 0,
+            bestWPM: 0,
+            settings: {
+                sound: true,
+                clicks: true,
+                feedback: true,
+                animations: true
+            }
+        };
+
+        // Tab Navigation
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetTab = btn.dataset.tab;
+                
+                // Update nav buttons
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Update tab content
+                document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+                document.getElementById(targetTab).classList.add('active');
+                
+                // Update charts if analytics tab
+                if (targetTab === 'analytics') {
+                    updateCharts();
+                }
+            });
+        });
+
+        // Settings toggles
+        document.querySelectorAll('.toggle').forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                toggle.classList.toggle('active');
+                const settingId = toggle.id.replace('Toggle', '');
+                appState.settings[settingId] = toggle.classList.contains('active');
+            });
+        });
+
+        // Typing functionality
+        function playSound(type) {
+            if (!appState.settings.sound) return;
+            
+            // Create audio context for better browser support
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            // Different sounds for different typing styles
+            const frequencies = {
+                soft: 800,
+                normal: 600,
+                heavy: 400,
+                smash: 200,
+                lightning: 1000
+            };
+            
+            oscillator.frequency.setValueAtTime(frequencies[type] || 600, audioContext.currentTime);
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.01);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+
+        function getTypingStyle(duration) {
+            if (duration < 100) return { type: 'lightning', emoji: '⚡', color: '#ffd700', description: 'Lightning Fast!', intensity: 100 };
+            if (duration < 150) return { type: 'soft', emoji: '🍼', color: '#c2f0c2', description: 'Soft Touch', intensity: 20 };
+            if (duration < 250) return { type: 'normal', emoji: '😊', color: '#cce0ff', description: 'Perfect Rhythm', intensity: 50 };
+            if (duration < 350) return { type: 'heavy', emoji: '🔨', color: '#ffcc99', description: 'Heavy Handed', intensity: 80 };
+            return { type: 'smash', emoji: '💥', color: '#ffb3b3', description: 'Keyboard Destroyer!', intensity: 100 };
+        }
+
+        function updateStats() {
+            document.getElementById('totalKeys').textContent = appState.totalKeys;
+            document.getElementById('avgTime').textContent = appState.totalKeys > 0 ? Math.round(appState.totalPressTime / appState.totalKeys) : 0;
+            
+            // Calculate WPM
+            if (appState.startTime) {
+                const minutesPassed = (Date.now() - appState.startTime) / 60000;
+                const wpm = Math.round(appState.wordCount / minutesPassed) || 0;
+                document.getElementById('wpm').textContent = wpm;
+                document.getElementById('userWPM').textContent = wpm;
+                
+                if (wpm > appState.bestWPM) {
+                    appState.bestWPM = wpm;
+                    document.getElementById('bestWPM').textContent = wpm;
+                }
+                
+                // Update speed history
+                appState.speedHistory.push({ time: Date.now(), wpm: wpm });
+                if (appState.speedHistory.length > 50) {
+                    appState.speedHistory.shift();
+                }
+            }
+            
+            // Update session time
+            if (appState.sessionStartTime) {
+                const sessionDuration = Math.floor((Date.now() - appState.sessionStartTime) / 1000);
+                const minutes = Math.floor(sessionDuration / 60);
+                const seconds = sessionDuration % 60;
+                document.getElementById('sessionTime').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            
+            document.getElementById('streak').textContent = appState.currentStreak;
+        }
+
+        function updateKeyFrequency(key) {
+            if (key.length === 1) {
+                appState.keyFrequency[key] = (appState.keyFrequency[key] || 0) + 1;
+            }
+        }
+
+        function checkAchievements(duration, wpm) {
+            const achievements = document.querySelectorAll('.achievement-card');
+            
+            // First Steps
+            if (appState.totalKeys >= 1 && !appState.achievements.has('firstTyper')) {
+                appState.achievements.add('firstTyper');
+                document.getElementById('firstTyper').classList.add('unlocked');
+                showNotification('🎉 Achievement Unlocked: First Steps!');
+            }
+            
+            // Speed Demon
+            if (wpm >= 60 && !appState.achievements.has('speedster')) {
+                appState.achievements.add('speedster');
+                document.getElementById('speedster').classList.add('unlocked');
+                showNotification('🎉 Achievement Unlocked: Speed Demon!');
+            }
+            
+            // Marathon Typer
+            if (appState.sessionStartTime && (Date.now() - appState.sessionStartTime) >= 600000 && !appState.achievements.has('marathoner')) {
+                appState.achievements.add('marathoner');
+                document.getElementById('marathoner').classList.add('unlocked');
+                showNotification('🎉 Achievement Unlocked: Marathon Typer!');
+            }
+            
+            // Key Destroyer
+            if (duration > 350 && !appState.achievements.has('destroyer')) {
+                appState.achievements.add('destroyer');
+                document.getElementById('destroyer').classList.add('unlocked');
+                showNotification('🎉 Achievement Unlocked: Key Destroyer!');
+            }
+            
+            // Key Explorer
+            if (Object.keys(appState.keyFrequency).length >= 50 && !appState.achievements.has('explorer')) {
+                appState.achievements.add('explorer');
+                document.getElementById('explorer').classList.add('unlocked');
+                showNotification('🎉 Achievement Unlocked: Key Explorer!');
+            }
+        }
